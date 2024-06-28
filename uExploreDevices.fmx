@@ -102,7 +102,6 @@ object FrDeviceExplorer: TFrDeviceExplorer
         Size.PlatformDefault = False
         ParentShowHint = False
         ShowHint = True
-        OnClick = SpeedButton1Click
       end
       object SkLGradus: TSkLabel
         Padding.Left = 10.000000000000000000
@@ -189,7 +188,6 @@ object FrDeviceExplorer: TFrDeviceExplorer
       end
       object tmMainRefresher: TTimer
         Enabled = False
-        OnTimer = tmMainRefresherTimer
         Left = 112
         Top = 40
       end

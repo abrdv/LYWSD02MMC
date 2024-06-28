@@ -31,7 +31,11 @@ const
     UUID_NUM_RECORDS = '{EBE0CCB9-7A0A-4B0C-8A1A-6FF2997DA3A6}'; //# 8 bytes               READ
     UUID_RECORD_IDX = '{EBE0CCBA-7A0A-4B0C-8A1A-6FF2997DA3A6}'; //# 4 bytes               READ WRITE
     NAMEDEV = 'LYWSD02';
-
+    defvalBattery = '--';
+    defvalTemperature = '--.-';
+    defvalHumanity = '--%';
+    defvalTime = '--:--';
+    defvalUnit = 'C';
 type
   TFrDeviceExplorer = class(TForm)
     tmAnimateFindDevices: TTimer;
@@ -55,8 +59,6 @@ type
     procedure sbloadtimeClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure sbtimesetClick(Sender: TObject);
-    procedure tmMainRefresherTimer(Sender: TObject);
-    procedure SpeedButton1Click(Sender: TObject);
   private
     FBluetoothManagerLE: TBluetoothLEManager;
     CurrentService: Integer;
@@ -66,7 +68,6 @@ type
     ACharacteristicTime: TBluetoothGattCharacteristic;
     ACharacteristicBattery: TBluetoothGattCharacteristic;
     procedure CleanDeviceInformation;
-    procedure DevicesDiscoveryLEEnd(const Sender: TObject; const ADevices: TBluetoothLEDeviceList);
     procedure setDevicenotconnected;
     procedure setDeviceconnected;
     procedure setDeviceTime;
@@ -143,6 +144,7 @@ begin
   CurrentService := 0;
   CurrentCharacteristic := 0;
 end;
+
 procedure TFrDeviceExplorer.GetDevice(var ADevice: TBluetoothLEDevice);
 var
   I: Integer;
@@ -154,11 +156,6 @@ begin
   end;
 end;
 
-procedure TFrDeviceExplorer.DevicesDiscoveryLEEnd(const Sender: TObject; const ADevices: TBluetoothLEDeviceList);
-begin
-  tmAnimateFindDevices.Enabled := False;
-end;
-
 procedure TFrDeviceExplorer.DevicesDiscoveryNAMEDEV(const Sender: TObject; const ADevices: TBluetoothLEDeviceList);
 var
   I: Integer;
@@ -166,16 +163,15 @@ var
 begin
   ListDevices:=TStringList.Create;
   try
-  for I := 0 to ADevices.Count - 1 do
-    ListDevices.Add(ADevices[I].DeviceName);
-  if ListDevices.IndexOf(NAMEDEV)=-1 then
-    begin
-      setDevicenotconnected;
-    end else
-    begin
-      setDeviceconnected;
-    end;
-
+    for I := 0 to ADevices.Count - 1 do
+      ListDevices.Add(ADevices[I].DeviceName);
+    if ListDevices.IndexOf(NAMEDEV)=-1 then
+      begin
+        setDevicenotconnected;
+      end else
+      begin
+        setDeviceconnected;
+      end;
   finally
     ListDevices.Free;
     AniIndicator1.Enabled:=false;
@@ -225,21 +221,6 @@ begin
     AChar:= AService.GetCharacteristic(StringToGUID(UUID_DATA));
     if (TBluetoothProperty.Notify in AChar.Properties) or (TBluetoothProperty.Indicate in AChar.Properties)then
       ADevice.SetCharacteristicNotification(AChar, True);
-  end;
-end;
-
-procedure TFrDeviceExplorer.SpeedButton1Click(Sender: TObject);
-begin
-  tmMainRefresher.Enabled:=true;
-end;
-
-procedure TFrDeviceExplorer.tmMainRefresherTimer(Sender: TObject);
-begin
-  tmMainRefresher.Enabled:=false;
-  try
-    getRefreshData;
-  finally
-    tmMainRefresher.Enabled:=true;
   end;
 end;
 
