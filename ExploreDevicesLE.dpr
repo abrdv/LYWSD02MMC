@@ -17,7 +17,10 @@ uses
   System.StartUpCopy,
   FMX.Forms,
   FMX.Skia,
-  uExploreDevices in 'uExploreDevices.pas' {FrDeviceExplorer};
+  uExploreDevices in 'uExploreDevices.pas' {FrDeviceExplorer},
+  consts in 'consts.pas',
+  ltedevice in 'ltedevice.pas',
+  utests in 'utests.pas';
 
 {$R *.res}
 

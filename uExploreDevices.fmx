@@ -8,7 +8,7 @@ object FrDeviceExplorer: TFrDeviceExplorer
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
   OnCreate = FormCreate
-  OnClose = FormClose
+  OnDestroy = FormDestroy
   DesignerMasterStyle = 0
   object tmAnimateFindDevices: TTimer
     Enabled = False
@@ -76,7 +76,6 @@ object FrDeviceExplorer: TFrDeviceExplorer
         Size.PlatformDefault = False
         ParentShowHint = False
         ShowHint = True
-        OnClick = sbloadtimeClick
       end
       object sbtimeset: TSpeedButton
         Hint = #1059#1089#1090#1072#1085#1086#1074#1080#1090#1100' '#1074#1088#1077#1084#1103

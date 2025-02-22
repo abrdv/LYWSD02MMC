@@ -1,0 +1,36 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{357F2193-FD07-490A-966F-BC01F46EC5DB}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="ExploreDevicesLE.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="ExploreDevicesLE">
+        <MSBuild Projects="ExploreDevicesLE.dproj"/>
+    </Target>
+    <Target Name="ExploreDevicesLE:Clean">
+        <MSBuild Projects="ExploreDevicesLE.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ExploreDevicesLE:Make">
+        <MSBuild Projects="ExploreDevicesLE.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="ExploreDevicesLE"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="ExploreDevicesLE:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="ExploreDevicesLE:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
