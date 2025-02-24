@@ -207,7 +207,6 @@
         </DCCReference>
         <DCCReference Include="consts.pas"/>
         <DCCReference Include="ltedevice.pas"/>
-        <DCCReference Include="utests.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

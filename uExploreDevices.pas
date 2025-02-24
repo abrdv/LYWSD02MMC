@@ -84,7 +84,7 @@ end;
 
 procedure TFrDeviceExplorer.FormDestroy(Sender: TObject);
 begin
-try
+  try
     pLTEDevice.DoDisconnect;
   finally
     try

@@ -19,8 +19,7 @@ uses
   FMX.Skia,
   uExploreDevices in 'uExploreDevices.pas' {FrDeviceExplorer},
   consts in 'consts.pas',
-  ltedevice in 'ltedevice.pas',
-  utests in 'utests.pas';
+  ltedevice in 'ltedevice.pas';
 
 {$R *.res}
 

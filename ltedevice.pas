@@ -25,8 +25,10 @@ type
   TActionSet = procedure(action: Boolean) of object;
 
   TLTEDevice = class
-      CurrentService: Integer;
-      CurrentCharacteristic: Integer;
+
+    private
+      fCurrentService: Integer;
+      fCurrentCharacteristic: Integer;
       ADevice: TBluetoothLEDevice;
       CharServiceDic: TDictionary<String, String>;
       ACharacteristicTime: TBluetoothGattCharacteristic;
@@ -40,14 +42,18 @@ type
       fRefreshView: TRefreshView;
       fWaitingView: TWaitingView;
       fActionSet: TActionSet;
-    private
+
       FBluetoothManagerLE: TBluetoothLEManager;
+
       function getTemp: string;
       function getHumn: string;
       function getClock: string;
       function getBattery: string;
       function getProp: string;
       function getBluetoothManagerLE: TBluetoothLEManager;
+
+      property BluetoothManagerLE: TBluetoothLEManager read FBluetoothManagerLE;
+
       procedure Setup;
       procedure CleanDeviceInformation;
       procedure setDeviceNotConnected;
@@ -64,7 +70,9 @@ type
       procedure RefreshCurrentCharacteristicData(const ACharacteristic: TBluetoothGattCharacteristic);
       procedure getRefreshData;
       procedure LoadTime;
-      property BluetoothManagerLE: TBluetoothLEManager read FBluetoothManagerLE;
+      procedure DoRefreshView;
+      procedure DoWaitingView(value: Boolean);
+      procedure DoActionSet(value: Boolean);
     public
       constructor Create(
         ARefreshView: TRefreshView;
@@ -78,6 +86,8 @@ type
       property clock: string read getClock;
       property battery: string read getBattery;
       property prop: string read getProp;
+      property CurrentService: Integer read fCurrentService;
+      property CurrentCharacteristic: Integer read fCurrentCharacteristic;
   end;
 
 implementation
@@ -87,12 +97,12 @@ constructor TLTEDevice.Create(
   AWaitingView: TWaitingView;
   AActionSet: TActionSet);
 begin
-  fRefreshView := ARefreshView;
-  fWaitingView := AWaitingView;
-  fActionSet := AActionSet;
+  if Assigned(ARefreshView) then fRefreshView := ARefreshView;
+  if Assigned(AWaitingView) then fWaitingView := AWaitingView;
+  if Assigned(AActionSet) then fActionSet := AActionSet;
   CharServiceDic:=TDictionary<String, String>.Create;
-  CurrentService := 0;
-  CurrentCharacteristic := 0;
+  fCurrentService := 0;
+  fCurrentCharacteristic := 0;
   Setup;
   setDeviceNotConnected;
 end;
@@ -105,6 +115,18 @@ begin
   setDeviceNotConnected;
   if Assigned(ADevice) then ADevice.Disconnect;
   ADevice:=nil;
+end;
+
+procedure TLTEDevice.DoRefreshView;
+begin
+  if Assigned(fRefreshView) then
+    fRefreshView;
+end;
+
+procedure TLTEDevice.DoWaitingView(value: Boolean);
+begin
+  if Assigned(fWaitingView) then
+    fWaitingView(value);
 end;
 
 procedure TLTEDevice.GetDevice(var ADevice: TBluetoothLEDevice);
@@ -127,9 +149,15 @@ begin
   //FBluetoothManagerLE.OnDiscoverLeDevice := DoInternalDiscoverLEDevice;
 end;
 
+procedure TLTEDevice.DoActionSet(value: Boolean);
+begin
+  if Assigned(fActionSet) then
+    fActionSet(value);
+end;
+
 function TLTEDevice.DoConnect: boolean;
 begin
-  fWaitingView(True);
+  DoWaitingView(True);
   try
   if Assigned(ADevice) then
     begin
@@ -151,7 +179,7 @@ var t: Uint32;
     AChar: TBluetoothGattCharacteristic;
 begin
   if ADevice=nil then exit;
-  fWaitingView(true);
+  DoWaitingView(true);
   try
     if CharServiceDic.ContainsKey(TIME_CHARACTERISTIC_UUID) then
       begin
@@ -162,7 +190,7 @@ begin
           ADevice.ReadCharacteristic(AChar);
       end;
   finally
-    fWaitingView(false);
+    DoWaitingView(false);
   end;
 end;
 
@@ -210,7 +238,6 @@ begin
                   ADevice.ReadCharacteristic(AChar);
                   ACharacteristicBattery:=AChar;
                 end
-
         end;
       end;
     end
@@ -309,8 +336,8 @@ begin
         setDeviceconnected;
       end;
   finally
+    DoWaitingView(False);
     ListDevices.Free;
-    fWaitingView(False);
   end;
 end;
 
@@ -329,7 +356,7 @@ begin
   )
   }
   if ADevice=nil then exit;
-  fWaitingView(True);
+  DoWaitingView(True);
   try
     if CharServiceDic.ContainsKey(TIME_CHARACTERISTIC_UUID) then
       begin
@@ -345,17 +372,17 @@ begin
           end;
         end;
   finally
-    fWaitingView(False);
+    DoWaitingView(False);
   end;
 end;
 
 
 procedure TLTEDevice.setDeviceNotConnected;
 begin
-  fActionSet(false);
+  DoActionSet(false);
   CharServiceDic.Clear;
   CleanDeviceInformation;
-  fWaitingView(False);
+  DoWaitingView(False);
 end;
 
 procedure TLTEDevice.setDeviceConnected;
@@ -365,7 +392,7 @@ begin
   if ADevice <> nil then
   begin
     //ADevice.OnServicesDiscovered := ServicesDiscovered;
-    fActionSet(ADevice.DiscoverServices);
+    DoActionSet(ADevice.DiscoverServices);
     getDeviceData;
   end
   else
@@ -441,7 +468,7 @@ begin
       AHumn:=0;
     end;
   finally
-    fRefreshView;
+    DoRefreshView;
   end;
 end;
 
@@ -459,7 +486,7 @@ begin
       ADateTime := 0;
     end;
   finally
-    fRefreshView;
+    DoRefreshView;
   end;
 end;
 
@@ -476,7 +503,7 @@ begin
       ABattery1 := -1;
     end;
   finally
-    fRefreshView;
+    DoRefreshView;
   end;
 
 end;
@@ -494,14 +521,14 @@ begin
       AGradus := -1;
     end;
   finally
-    fRefreshView;
+    DoRefreshView;
   end;
 end;
 
 procedure TLTEDevice.CleanDeviceInformation;
 begin
-  CurrentService := 0;
-  CurrentCharacteristic := 0;
+  fCurrentService := 0;
+  fCurrentCharacteristic := 0;
 end;
 
 procedure TLTEDevice.DidCharacteristicData(const Sender: TObject; const ACharacteristic: TBluetoothGattCharacteristic;

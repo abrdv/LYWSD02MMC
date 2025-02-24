@@ -6,6 +6,9 @@
         <Projects Include="ExploreDevicesLE.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="PTestLteDevice.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -23,14 +26,23 @@
     <Target Name="ExploreDevicesLE:Make">
         <MSBuild Projects="ExploreDevicesLE.dproj" Targets="Make"/>
     </Target>
+    <Target Name="PTestLteDevice">
+        <MSBuild Projects="PTestLteDevice.dproj"/>
+    </Target>
+    <Target Name="PTestLteDevice:Clean">
+        <MSBuild Projects="PTestLteDevice.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="PTestLteDevice:Make">
+        <MSBuild Projects="PTestLteDevice.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="ExploreDevicesLE"/>
+        <CallTarget Targets="ExploreDevicesLE;PTestLteDevice"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="ExploreDevicesLE:Clean"/>
+        <CallTarget Targets="ExploreDevicesLE:Clean;PTestLteDevice:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="ExploreDevicesLE:Make"/>
+        <CallTarget Targets="ExploreDevicesLE:Make;PTestLteDevice:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
