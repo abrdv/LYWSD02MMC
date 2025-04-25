@@ -36,7 +36,7 @@ type
     sbloadtime: TSpeedButton;
     ilpictures: TImageList;
     sbtimeset: TSpeedButton;
-    SpeedButton1: TSpeedButton;
+    sbsubscribeon: TSpeedButton;
     SkLGradus: TSkLabel;
     SkLHumn: TSkLabel;
     SkLTemp: TSkLabel;
@@ -67,10 +67,18 @@ begin
   if action then
   begin
     sbconnect.Text:='Connected';
+    sbconnect.Enabled := False;
+    sbtimeset.Enabled := True;
+    sbloadtime.Enabled := True;
+    sbsubscribeon.Enabled := True;
     tmMainRefresher.Enabled:=true;
   end else
   begin
     sbconnect.Text:='Not connected';
+    sbconnect.Enabled := True;
+    sbtimeset.Enabled := False;
+    sbloadtime.Enabled := False;
+    sbsubscribeon.Enabled := False;
     SkLclock.Text:='00:00';
     tmMainRefresher.Enabled:=false;
   end;
@@ -105,6 +113,7 @@ end;
 
 procedure TFrDeviceExplorer.sbconnectClick(Sender: TObject);
 begin
+  sbconnect.Enabled := False;
   tmAnimateFindServices.Enabled := pLTEDevice.DoConnect;
 end;
 
